@@ -18,15 +18,29 @@ namespace ShipmentTracking
         List<Forwarder> ShipmentStatus = new List<Forwarder>();
         List<Warehouse> ShipmentPacking = new List<Warehouse>();
 
+        //public int ido = 0;
+
         public Form1()
         {
             InitializeComponent();
 
+            //label1.Text = "0";
+            timer1.Interval = 5000;
+            timer1.Start();
+            timer1.Tick += Timer1_Tick;          
+            
+           
+        }
+
+        private void Timer1_Tick(object sender, EventArgs e)
+        {
+            //ido++;
+            //label1.Text = ido.ToString();
+
             OpenOrders = GetOpenOrders(@"C:\Temp\sales.csv");
             ShipmentStatus = GetShipmentStatus(@"C:\Temp\forwarder.csv");
             ShipmentPacking = GetShipmentPacking(@"C:\Temp\warehouse.csv");
-            dataGridView1.DataSource = ShipmentStatus;
-           
+            //dataGridView1.DataSource = ShipmentStatus;
         }
 
         public List<Warehouse> GetShipmentPacking(string csvpath)
@@ -62,7 +76,7 @@ namespace ShipmentTracking
                     {
                         PackageNumber = int.Parse(line[0]),
                         DeliveryStatus = line[1],
-                        DeliveryDate = int.Parse(line[0])
+                        DeliveryDate = int.Parse(line[2])
                     });
                 }
             }
