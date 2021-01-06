@@ -17,13 +17,9 @@ namespace ShipmentTracking
         List<Forwarder> ShipmentStatus = new List<Forwarder>();
         List<Warehouse> ShipmentPacking = new List<Warehouse>();
 
-
         public Form1()
         {
             InitializeComponent();
-
-            //label1.Text = "0";
-
 
         }
 
@@ -139,21 +135,49 @@ namespace ShipmentTracking
 
         private void buttonStart_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(textBoxForwarder.Text) && string.IsNullOrEmpty(textBoxWarehouse.Text))
+            if (string.IsNullOrEmpty(textBoxForwarder.Text))
             {
-                MessageBox.Show("Hiányzó csv fájl elérés!");
+                MessageBox.Show("Hiányzó fuvarozói csv fájl elérés!");
+                return;
+            }
+
+            if (string.IsNullOrEmpty(textBoxWarehouse.Text))
+            {
+                MessageBox.Show("Hiányzó raktári csv fájl elérés!");
                 return;
             }
 
             timer1.Interval = 2000;
             timer1.Start();
             timer1.Tick += Timer1_Tick;
-  
         }
 
         private void buttonStop_Click(object sender, EventArgs e)
         {
             timer1.Stop();
+        }
+
+        private void buttonExport_Click(object sender, EventArgs e)
+        {
+            timer1.Stop();
+            if (dataGridView1.RowCount == 0)
+            {
+                MessageBox.Show("Nincs adat exportálni!");
+                return;
+            }
+
+            ExcelExport em = new ExcelExport(@"C:\temp\billing_list.xlsx");
+
+            string[] headers = new string[]{
+                "Vevői kód",
+                "Megrendelés",
+                "Fuvarlevél",
+                "Kiszállítás dátuma"
+            };
+            em.CreateExcel(headers, ShipmentPacking);
+            em.CreateTable(headers, ShipmentPacking);
+            em.FormatTable(headers);
+            em.Mentes();
         }
     }
 }

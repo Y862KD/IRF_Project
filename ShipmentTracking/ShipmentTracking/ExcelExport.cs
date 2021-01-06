@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Drawing;
+using ShipmentTracking.Entities;
 
 namespace ShipmentTracking
 {
@@ -14,16 +16,16 @@ namespace ShipmentTracking
         Excel.Application xlApp;
         Excel.Workbook xlWB;
         Excel.Worksheet xlSheet;
+        string _pathPlusFileName;
 
-        public ExcelExport()
+        public ExcelExport(string pathPlusFilename)
         {
-            CreateExcel();
-            FormatTable();
+            _pathPlusFileName = pathPlusFilename;
         }
 
-        private void FormatTable()
+        public void FormatTable(string[] headers)
         {
-            /*int lastRowID = xlSheet.UsedRange.Rows.Count;
+            int lastRowID = xlSheet.UsedRange.Rows.Count;
             int lastColumnID = xlSheet.UsedRange.Columns.Count;
 
             Excel.Range headerRange = xlSheet.get_Range(GetCell(1, 1), GetCell(1, headers.Length));
@@ -42,20 +44,17 @@ namespace ShipmentTracking
             firstColumnRange.Font.Bold = true;
             firstColumnRange.Interior.Color = Color.LightYellow;
 
-            Excel.Range lastColumnRange = xlSheet.get_Range(GetCell(1, lastColumnID), GetCell(lastRowID, lastColumnID));
-            lastColumnRange.Interior.Color = Color.LightGreen;
-            lastColumnRange.NumberFormat = "#,##0.00";*/
         }
 
-        private void CreateExcel()
+        public void CreateExcel(string[] headers, List<Warehouse> ShipmentPacking)
         {
             try
             {
+
                 xlApp = new Excel.Application();
                 xlWB = xlApp.Workbooks.Add(Missing.Value);
                 xlSheet = xlWB.ActiveSheet;
-
-                CreateTable();
+                              
 
                 xlApp.Visible = true;
                 xlApp.UserControl = true;
@@ -73,12 +72,34 @@ namespace ShipmentTracking
             }
         }
 
-        private void CreateTable()
+        public void CreateTable(string[] headers, List<Warehouse> ShipmentPacking)
         {
-            throw new NotImplementedException();
-        }
+            {
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    xlSheet.Cells[1, i+1] = headers[i];
+                }
 
-        /*private string GetCell(int x, int y)
+                object[,] values = new object[ShipmentPacking.Count, headers.Length];
+
+                int counter = 0;
+                foreach (Warehouse f in ShipmentPacking)
+                {
+                    values[counter, 0] = f.CustomerCode;
+                    values[counter, 1] = f.OrderNumber;
+                    values[counter, 2] = f.PackageNumber;
+                    values[counter, 3] = f.PickUpDate;
+
+                    counter++;
+                }
+
+                xlSheet.get_Range(
+                 GetCell(2, 1),
+                 GetCell(1 + values.GetLength(0), values.GetLength(1))).Value2 = values;
+                                
+            }
+        }
+        public string GetCell(int x, int y)
         {
             string ExcelCoordinate = "";
             int dividend = y;
@@ -93,6 +114,12 @@ namespace ShipmentTracking
             ExcelCoordinate += x.ToString();
 
             return ExcelCoordinate;
-        }*/
+        }
+
+        public void Mentes()
+        {
+            xlWB.SaveAs(_pathPlusFileName);
+            //xlWB.Close();
+        }
     }
 }
