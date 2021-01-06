@@ -10,3 +10,17 @@ forwarder.csv (Fuvarlevél, Státusz, Kiszállítási napja)
 A fuvarozó a futárok visszajelzése alapján akár naponta többször is tud visszajelzést küldeni. Ezért lehetővé kell tenni az automatikus frissítést bizonyos időközönként a fájlok forrásmappájából.
 
 A pénzügyi osztály igazolást kér a számlázható tételekről, így Excel generálást is lehetővé kell tenni.
+
+-------
+
+Adatok importálása
+A) Olvasás CSV fájlból
+
+Adatfeldolgozás
+C) Adott tulajdonságú elemek törlése egy listából
+
+Adatok exportálása / megjelenítése
+B) Formázott Excel létrehozása a rendelkezésre álló adatokból
+
+Általános elemek
+D) Timer használata
