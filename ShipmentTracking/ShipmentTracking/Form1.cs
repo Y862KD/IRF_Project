@@ -14,7 +14,6 @@ namespace ShipmentTracking
 {
     public partial class Form1 : Form
     {
-        List<CustomerOrders> OpenOrders = new List<CustomerOrders>();
         List<Forwarder> ShipmentStatus = new List<Forwarder>();
         List<Warehouse> ShipmentPacking = new List<Warehouse>();
 
@@ -27,9 +26,8 @@ namespace ShipmentTracking
             //label1.Text = "0";
             timer1.Interval = 5000;
             timer1.Start();
-            timer1.Tick += Timer1_Tick;          
-            
-           
+            timer1.Tick += Timer1_Tick;
+
         }
 
         private void Timer1_Tick(object sender, EventArgs e)
@@ -37,10 +35,33 @@ namespace ShipmentTracking
             //ido++;
             //label1.Text = ido.ToString();
 
-            OpenOrders = GetOpenOrders(@"C:\Temp\sales.csv");
+          
             ShipmentStatus = GetShipmentStatus(@"C:\Temp\forwarder.csv");
             ShipmentPacking = GetShipmentPacking(@"C:\Temp\warehouse.csv");
-            //dataGridView1.DataSource = ShipmentStatus;
+
+            for (int z = ShipmentPacking.Count - 1; z >= 0; z--)
+            {
+                if (ShipmentPacking[z].PickUpDate.ToString() == "0")
+                {
+                    ShipmentPacking.RemoveAt(z);
+                }
+            }
+
+            for (int i = ShipmentPacking.Count - 1; i >= 0; i--)
+            {
+                for (int s = 0; s < ShipmentStatus.Count; s++)
+                {
+                    if (ShipmentPacking[i].PackageNumber.ToString() == ShipmentStatus[s].PackageNumber.ToString())
+                    {
+                        if (ShipmentStatus[s].DeliveryStatus == "no")
+                        {
+                            ShipmentPacking.RemoveAt(i);
+                        }
+                    }
+                }
+            }
+
+            dataGridView1.DataSource = ShipmentPacking;
         }
 
         public List<Warehouse> GetShipmentPacking(string csvpath)
@@ -54,9 +75,10 @@ namespace ShipmentTracking
                     var line = sr.ReadLine().Split(';');
                     warehouse.Add(new Warehouse()
                     {
-                        OrderNumber = int.Parse(line[0]),
-                        PackageNumber = int.Parse(line[1]),
-                        PickUpDate = int.Parse(line[2])
+                        CustomerCode = int.Parse(line[0]),
+                        OrderNumber = int.Parse(line[1]),
+                        PackageNumber = int.Parse(line[2]),
+                        PickUpDate = line[3]
                     });
                 }
             }
@@ -76,30 +98,11 @@ namespace ShipmentTracking
                     {
                         PackageNumber = int.Parse(line[0]),
                         DeliveryStatus = line[1],
-                        DeliveryDate = int.Parse(line[2])
+                        DeliveryDate = line[2]
                     });
                 }
             }
             return forwarder;
-        }
-
-        public List<CustomerOrders> GetOpenOrders(string csvpath)
-        {
-            List<CustomerOrders> customerOrders = new List<CustomerOrders>();
-
-            using (StreamReader sr = new StreamReader(csvpath, Encoding.Default))
-            {
-                while (!sr.EndOfStream)
-                {
-                    var line = sr.ReadLine().Split(';');
-                    customerOrders.Add(new CustomerOrders()
-                    {
-                        CustomerCode = int.Parse(line[0]),
-                        OrderNumber = int.Parse(line[1])
-                    });
-                }
-            }
-            return customerOrders;
         }
     }
 }

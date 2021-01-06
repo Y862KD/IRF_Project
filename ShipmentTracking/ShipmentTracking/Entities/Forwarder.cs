@@ -8,8 +8,9 @@ namespace ShipmentTracking.Entities
 {
     public class Forwarder
     {
+        
         public int PackageNumber { get; set; }
         public string DeliveryStatus { get; set; }
-        public int DeliveryDate { get; set; }
+        public string DeliveryDate { get; set; }
     }
 }

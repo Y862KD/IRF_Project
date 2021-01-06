@@ -8,8 +8,9 @@ namespace ShipmentTracking.Entities
 {
     public class Warehouse
     {
+        public int CustomerCode { get; set; }
         public int OrderNumber { get; set; }
         public int PackageNumber { get; set; }
-        public int PickUpDate { get; set; }
+        public string PickUpDate { get; set; }
     }
 }
